@@ -36,8 +36,15 @@ namespace Tickest_Final.Controllers
             }
 
             // Redirigir al dashboard o alguna vista principal
-            return RedirectToAction("Dashboard", "Home");
+            return RedirectToAction("Dashboard", "Usuario");
         }
+
+        [HttpGet]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
 
         // Vista de registro de usuario externo
         [HttpGet]
