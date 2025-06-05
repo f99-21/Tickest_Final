@@ -1,13 +1,11 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Tickest_Final.Models;
 
-namespace GestionTickets.Controllers
+namespace Tickest_Final.Controllers
 {
     public class UsuarioController : Controller
     {
@@ -31,7 +29,7 @@ namespace GestionTickets.Controllers
         {
             var usuario = await _ticketsContexto.usuario.FirstOrDefaultAsync(u => u.correo == model.correo);
 
-            if (usuario == null || !VerificarContrasena(model.contrasena, usuario.contrasena))
+            if (usuario == null || usuario.contrasena != model.contrasena)
             {
                 ViewBag.ErrorMessage = "Credenciales inválidas";
                 return View();
@@ -63,14 +61,9 @@ namespace GestionTickets.Controllers
 
                 model.tipo_usuario = "externo";
                 model.rol = "cliente";
-                string contrasenaTemporal = model.contrasena;
-                model.contrasena = EncriptarContrasena(model.contrasena);
 
                 _ticketsContexto.usuario.Add(model);
                 await _ticketsContexto.SaveChangesAsync();
-
-                // Enviar correo con la contraseña temporal
-                // Puedes usar una función similar a la que ya tienes para enviar el correo
 
                 ViewBag.Message = "Usuario externo registrado exitosamente.";
                 return View(model);
@@ -102,22 +95,19 @@ namespace GestionTickets.Controllers
                     return View();
                 }
 
-                // Verificar contraseña actual
-                if (!VerificarContrasena(model.ContrasenaActual, usuario.contrasena))
+                if (usuario.contrasena != model.ContrasenaActual)
                 {
                     ViewBag.Message = "La contraseña actual es incorrecta";
                     return View();
                 }
 
-                // Validar que la nueva contraseña no sea igual a la anterior
-                if (VerificarContrasena(model.NuevaContrasena, usuario.contrasena))
+                if (usuario.contrasena == model.NuevaContrasena)
                 {
                     ViewBag.Message = "La nueva contraseña no puede ser igual a la actual";
                     return View();
                 }
 
-                // Hashear y guardar la nueva contraseña
-                usuario.contrasena = EncriptarContrasena(model.NuevaContrasena);
+                usuario.contrasena = model.NuevaContrasena;
                 _ticketsContexto.usuario.Update(usuario);
                 await _ticketsContexto.SaveChangesAsync();
 
@@ -129,42 +119,6 @@ namespace GestionTickets.Controllers
                 ViewBag.Message = "Error al cambiar la contraseña: " + ex.Message;
                 return View();
             }
-        }
-
-        // Método para encriptar la contraseña
-        public static string EncriptarContrasena(string password)
-        {
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
-            return savedPasswordHash;
-        }
-
-        public static bool VerificarContrasena(string enteredPassword, string storedHash)
-        {
-            byte[] hashBytes = Convert.FromBase64String(storedHash);
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(enteredPassword, salt, 10000, HashAlgorithmName.SHA256);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            for (int i = 0; i < 20; i++)
-            {
-                if (hashBytes[i + 16] != hash[i])
-                {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 

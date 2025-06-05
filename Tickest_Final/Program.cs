@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 
 // Configuración de la cadena de conexión a la base de datos
 builder.Services.AddDbContext<ticketsContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(""))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
 var app = builder.Build();
