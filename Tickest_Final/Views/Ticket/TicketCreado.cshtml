@@ -1,0 +1,20 @@
+﻿@model Tickest_Final.Models.ticket
+
+@{
+    ViewData["Title"] = "Ticket Creado";
+}
+
+<h2>Ticket Creado Exitosamente</h2>
+
+<p>Tu ticket ha sido creado con éxito.</p>
+<p><strong>Número de Ticket:</strong> @Model.id_ticket</p>
+
+<div>
+    <h3>Detalles del Ticket</h3>
+    <p><strong>Título:</strong> @Model.titulo</p>
+    <p><strong>Descripción:</strong> @Model.descripcion</p>
+    <p><strong>Prioridad:</strong> @Model.prioridad</p>
+    <p><strong>Estado:</strong> @Model.estado</p>
+</div>
+
+<p><a href="@Url.Action("Index", "Home")">Volver al inicio</a></p>

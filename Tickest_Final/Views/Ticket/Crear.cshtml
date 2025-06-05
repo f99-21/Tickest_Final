@@ -1,0 +1,63 @@
+﻿@model Tickest_Final.Models.ticket
+
+@{
+    ViewData["Title"] = "Crear Nuevo Ticket";
+}
+
+<h2>Crear Nuevo Ticket</h2>
+
+<form asp-action="CrearTicket" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="titulo">Título de la Aplicación o Servicio:</label>
+        <input type="text" asp-for="titulo" class="form-control" required />
+        <span asp-validation-for="titulo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción del Problema:</label>
+        <textarea asp-for="descripcion" class="form-control" required></textarea>
+        <span asp-validation-for="descripcion" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="archivos">Archivos de Respaldo:</label>
+        <input type="file" asp-for="descripcion" class="form-control" multiple />
+    </div>
+
+    <div class="form-group">
+        <label for="prioridad">Prioridad:</label>
+        <select asp-for="prioridad" class="form-control" required>
+            <option value="Critico">Crítico</option>
+            <option value="Importante">Importante</option>
+            <option value="Baja">Baja</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="tipo_ticket">Tipo de Ticket:</label>
+        <input type="text" asp-for="tipo_ticket" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="categoria_id">Categoría:</label>
+        <input type="number" asp-for="id_categoria" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="usuario_id">Usuario (ID):</label>
+        <input type="number" asp-for="id_usuario" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Ticket</button>
+</form>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="text-danger">@ViewBag.ErrorMessage</p>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
