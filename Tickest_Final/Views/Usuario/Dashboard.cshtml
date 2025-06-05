@@ -1,0 +1,26 @@
+﻿@model Tickest_Final.Models.usuario
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Bienvenido, @Model.nombre @Model.apellido</h2>
+
+<div>
+    <h3>Detalles del Usuario</h3>
+    <p><strong>Correo:</strong> @Model.correo</p>
+    <p><strong>Tipo de Usuario:</strong> @Model.tipo_usuario</p>
+    <p><strong>Rol:</strong> @Model.rol</p>
+</div>
+
+<div>
+    <h3>Opciones</h3>
+    <ul>
+        <li><a href="#">Ver mis tickets</a></li>
+        <li><a href="#">Crear un nuevo ticket</a></li>
+    </ul>
+</div>
+
+<div>
+    <p><a href="@Url.Action("Logout", "Usuario")">Cerrar sesión</a></p>
+</div>
